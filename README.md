@@ -1,6 +1,6 @@
 # Gesture-Recognition-With-HOG-and-SVM
 ## About
-基于C++和Opencv的传统手势识别
+基于C++ 17和Opencv 4.5.4的传统手势识别
 
 The project presents a simple solution for retraining and classifying images with SVM and HOG features. Currently the tranined file can detect and classify multiple hand gestures.
 ## Retrain
