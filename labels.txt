@@ -1,5 +1,4 @@
-1,A,./data\A
-2,C,./data\C
-3,Five,./data\Five
-4,tmp,./data\tmp
-5,V,./data\V
+1,A,./data/train\A
+2,C,./data/train\C
+3,Five,./data/train\Five
+4,V,./data/train\V

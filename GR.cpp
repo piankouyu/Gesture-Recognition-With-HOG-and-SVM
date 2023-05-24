@@ -211,6 +211,7 @@ public:
                 y = rect.y;
                 w = rect.width;
                 h = rect.height;
+                cout << "ROI" << x << ' ' << y << ' ' << w << ' ' << h << endl;
                 cv::Point center(x + w / 2, y + h / 2);
                 this->items.push_back({ id, x, y, w, h, center.x, center.y });
                 id++;
@@ -452,7 +453,8 @@ public:
 
         Mat resized;
         resize(img, resized, cv::Size(sampleSize, sampleSize), 0, 0, cv::INTER_AREA);
-
+        imshow("HOG", resized);
+        waitKey(0);
         vector<float> ret;
         this->hog.compute(resized, ret);
 
@@ -486,10 +488,11 @@ public:
             // resize it
             Mat resized;
             resize(img, resized, Size(sampleSize, sampleSize), 0, 0, INTER_AREA);
-
+            //imshow("HOG", resized);
+            //waitKey(0);
             vector<float> ret;
             this->hog.compute(resized, ret);
-
+            cout << ret.size() << endl;
             this->HogAccumulator.push_back(make_tuple(label, fvector2fmat(ret), strlabel));
         }
     }
@@ -537,6 +540,7 @@ public:
 
         trainingData.convertTo(trainingData, CV_32F); // convert to float
         trainingCalss.convertTo(trainingCalss, CV_32S); // convert to int
+        printf("Data row:%d col:%d Class row:%d\r\n", trainingData.rows, trainingData.cols, trainingCalss.rows);
 
         this->svm->train(trainingData,  ml::ROW_SAMPLE,trainingCalss);
 
@@ -624,38 +628,43 @@ private:
 int main()
 {
     ////train
-    //string traindir = "./data";
-    //string labelfile = "./labels.txt";
-    //string trainedfile = "./data.xml";
-    //clTraningSetManager TSM;
-    //TSM.SaveLabelsFile(traindir, labelfile);
-    //cout << "Labelfile " << labelfile << " created, exiting.";
-    //clHogDetector HD(96);
-    //vector<string> lf = TSM.LoadLabelsFile("./labels.txt");
-    //for (int i = 0; i < lf.size(); i += 3) {
-    //    HD.AddToTrainingSet(lf[i + 2], atoi(lf[i].c_str()), lf[i + 1]);
-    //}
-    //HD.UpdateLabelNames(lf);
-    //HD.TrainSVMWithHOG(96);
-    //HD.SaveTrainingData(trainedfile);
+    // 
+    string traindir = "./data/train";
+    string labelfile = "./labels.txt";
+    string trainedfile = "./data.xml";
+
+    clTraningSetManager TSM;
+    TSM.SaveLabelsFile(traindir, labelfile);
+    cout << "Labelfile " << labelfile << " created, exiting.";
+    clHogDetector HD(96);
+    vector<string> lf = TSM.LoadLabelsFile("./labels.txt");
+    for (int i = 0; i < lf.size(); i += 3) {
+        HD.AddToTrainingSet(lf[i + 2], atoi(lf[i].c_str()), lf[i + 1]);
+    }
+    HD.UpdateLabelNames(lf);
+    HD.TrainSVMWithHOG(96);
+    HD.SaveTrainingData(trainedfile);
 
     //predict
-    clPreProcessing PP;
-    ContourDetector CD;
-    clTraningSetManager TSM;
-    clHogDetector HD(96, "./data.xml");
-    vector<string> lf = TSM.LoadLabelsFile("./labels.txt");
-    HD.UpdateLabelNames(lf);
+    // 
+    //clPreProcessing PP;
+    //ContourDetector CD;
+    //clTraningSetManager TSM;
+    //clHogDetector HD(96, "./data.xml");
+    //vector<string> lf = TSM.LoadLabelsFile("./labels.txt");
+    //HD.UpdateLabelNames(lf);
 
-    for (auto& p : filesystem::directory_iterator("./A")) {
-        Mat img0 = imread(p.path().string());
-        Mat img1 = PP.CombineDetections(img0);
-        img1 = PP.processFilter(img1);
-        auto detection = CD.ContourFilter(img1, 500);
-        auto rois = CD.GetRoiForDetections(img0, detection, 0);
-        auto res = HD.ClassifyRoi(rois, 96);
-        for (auto& i : res) {
-            cout << get<0>(i) << " " << get<1>(i) << endl;
-        }
-    }
+    //for (auto& p : filesystem::directory_iterator("./data/test/V")) {
+    //    Mat img0 = imread(p.path().string());
+    //    //Mat img1 = PP.CombineDetections(img0);
+    //    //img1 = PP.processFilter(img1);
+    //    auto detection = CD.ContourFilter(img0, 500);
+    //    auto rois = CD.GetRoiForDetections(img0, detection, 0);
+    //    
+    //    auto res = HD.ClassifyRoi(rois, 96);
+    //    for (auto& i : res) {
+    //        cout << get<0>(i) << " " << get<1>(i) << endl;
+    //    }
+    //}
 }
+
