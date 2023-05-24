@@ -335,22 +335,22 @@ public:
     }
 
     void normalize_restore(Mat src, Mat dst, double max=255, double min=128)
-    { // ¼ì²éÊäÈëÍ¼ÏñÊÇ·ñÎª¿Õ
+    { // æ£€æŸ¥è¾“å…¥å›¾åƒæ˜¯å¦ä¸ºç©º
         if (src.empty())
         {
             cout << "Input image is empty." << endl;
             return;
-        } // ¼ì²éÊäÈëÍ¼ÏñÊÇ·ñÎª¸¡µãÀàĞÍ
+        } // æ£€æŸ¥è¾“å…¥å›¾åƒæ˜¯å¦ä¸ºæµ®ç‚¹ç±»å‹
         if (src.type() != CV_32F && src.type() != CV_64F)
         {
             cout << "Input image must be float type." << endl;
             return;
-        }                                                  // ´´½¨Êä³öÍ¼Ïñ£¬ÓëÊäÈëÍ¼Ïñ´óĞ¡ºÍÍ¨µÀÊıÏàÍ¬£¬µ«ÀàĞÍÎªÎŞ·ûºÅ×Ö·û
-        dst = Mat(src.size(), CV_8UC(src.channels())); // ±éÀúÊäÈëÍ¼ÏñµÄÃ¿¸öÏñËØ
+        }                                                  // åˆ›å»ºè¾“å‡ºå›¾åƒï¼Œä¸è¾“å…¥å›¾åƒå¤§å°å’Œé€šé“æ•°ç›¸åŒï¼Œä½†ç±»å‹ä¸ºæ— ç¬¦å·å­—ç¬¦
+        dst = Mat(src.size(), CV_8UC(src.channels())); // éå†è¾“å…¥å›¾åƒçš„æ¯ä¸ªåƒç´ 
         for (int i = 0; i < src.rows; i++)
         {
             for (int j = 0; j < src.cols; j++)
-            { // ¶ÔÓÚÃ¿¸öÍ¨µÀ£¬ÓÃ·´Ïò¹«Ê½¼ÆËã»¹Ô­ºóµÄÏñËØÖµ£¬²¢¸³Öµ¸øÊä³öÍ¼Ïñ
+            { // å¯¹äºæ¯ä¸ªé€šé“ï¼Œç”¨åå‘å…¬å¼è®¡ç®—è¿˜åŸåçš„åƒç´ å€¼ï¼Œå¹¶èµ‹å€¼ç»™è¾“å‡ºå›¾åƒ
                 for (int k = 0; k < src.channels(); k++)
                 {
                     dst.at<Vec3b>(i, j)[k] = static_cast<uchar>(src.at<Vec3f>(i, j)[k] * (max - min) + min);
@@ -633,7 +633,7 @@ int main()
     //clHogDetector HD(96);
     //vector<string> lf = TSM.LoadLabelsFile("./labels.txt");
     //for (int i = 0; i < lf.size(); i += 3) {
-    //    HD.AddToTrainingSet(lf[i], atoi(lf[i + 1].c_str()), lf[i + 2]);
+    //    HD.AddToTrainingSet(lf[i + 2], atoi(lf[i].c_str()), lf[i + 1]);
     //}
     //HD.UpdateLabelNames(lf);
     //HD.TrainSVMWithHOG(96);
